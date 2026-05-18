@@ -1,7 +1,10 @@
 import asyncio
+from uuid import UUID
 import pytest_asyncio
 from store.db.mongo import db_client
 import pytest
+from store.schemas.product import ProductIn
+from tests.factories import product_data
 
 
 @pytest.fixture(scope="function")
@@ -25,3 +28,13 @@ async def clear_collections(mongo_client, event_loop):
             continue
 
         await mongo_client.get_database()[collection_name].delete_many({})
+
+
+@pytest.fixture
+def product_id() -> UUID:
+    return UUID("3f1c9a5e-8b42-4d7f-9c6a-2e5b1a0f7d3c")
+
+
+@pytest.fixture
+def product_in(product_id):
+    return ProductIn(**product_data(), id=product_id)

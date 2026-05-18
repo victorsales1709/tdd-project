@@ -3,11 +3,8 @@ from store.core.config import settings
 
 
 class MongoClient:
-    def __init__(self) -> None:
-        self.client: AsyncIOMotorClient = AsyncIOMotorClient(settings.DATABASE_URL)
-
-    def get(self):
-        return self.client
+    def get(self) -> AsyncIOMotorClient:
+        return AsyncIOMotorClient(settings.DATABASE_URL)
 
 
 db_client = MongoClient()
