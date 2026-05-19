@@ -1,17 +1,9 @@
-import asyncio
 from uuid import UUID
 import pytest_asyncio
 from store.db.mongo import db_client
 import pytest
-from store.schemas.product import ProductIn
+from store.schemas.product import ProductIn, ProductUpdate
 from tests.factories import product_data
-
-
-@pytest.fixture(scope="function")
-def event_loop():
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
 
 
 @pytest.fixture(scope="session")
@@ -20,7 +12,7 @@ def mongo_client():
 
 
 @pytest_asyncio.fixture(autouse=True)
-async def clear_collections(mongo_client, event_loop):
+async def clear_collections(mongo_client):
     yield
     collections_names = await mongo_client.get_database().list_collection_names()
     for collection_name in collections_names:
@@ -38,3 +30,8 @@ def product_id() -> UUID:
 @pytest.fixture
 def product_in(product_id):
     return ProductIn(**product_data(), id=product_id)
+
+
+@pytest.fixture
+def product_update(product_id):
+    return ProductUpdate(**product_data(), id=product_id)
