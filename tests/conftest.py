@@ -3,7 +3,9 @@ import pytest_asyncio
 from store.db.mongo import db_client
 import pytest
 from store.schemas.product import ProductIn, ProductUpdate
+from store.usecases.product import product_usecase
 from tests.factories import product_data
+from tests.schemas.factories import products_data
 
 
 @pytest.fixture(scope="session")
@@ -35,3 +37,18 @@ def product_in(product_id):
 @pytest.fixture
 def product_update(product_id):
     return ProductUpdate(**product_data(), id=product_id)
+
+
+@pytest.fixture
+async def product_inserted(product_in):
+    return await product_usecase.create(body=product_in)
+
+
+@pytest.fixture
+def products_in():
+    return [ProductIn(**data) for data in products_data()]
+
+
+@pytest.fixture
+async def products_inserted(products_in):
+    return [await product_usecase.create(body=product) for product in products_in]
